@@ -19,6 +19,16 @@ db.sequelize.sync().then((result) => {
         console.log(err);
 })
 
+app.get('/komik', async (req, res) => {
+    const data = req.query;
+    try {
+        const komik = await db.Komik.findAll({ where: data});
+        res.send(komik);
+    } catch (error){
+        res.status(500).send({ message: error.message});
+    };
+});
+
 app.post('/komik', async (req, res) => {
     const data = req.body;
     try {
@@ -52,7 +62,7 @@ app.delete('/komik/:id', async (req, res) => {
             return res.status(404).send({ message: 'Komik not found' });
         }
         await komik.destroy();
-        res.send({ message: 'Komik berhasil dihapus' });
+        res.send({ message: 'Komik berhasil dihapus', komik });
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
